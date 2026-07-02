@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           git clone https://github.com/roblox/testez.git TestEZ
-      # Install rbxmk (correct version) - extract exe directly
+      # Install rbxmk (correct version) - extract exe directly and add to PATH
       - name: Install rbxmk
         shell: bash
         run: |
@@ -33,8 +33,8 @@ jobs:
           unzip -q rbxmk.zip -d ${{ runner.temp }}/rbxmk
           chmod +x ${{ runner.temp }}/rbxmk/rbxmk.exe
           echo "${{ runner.temp }}/rbxmk" >> $GITHUB_PATH
-      # Run tests with rbxmk (using full path to avoid PATH issues)
+      # Run tests with rbxmk (now in PATH)
       - name: Run Tests with rbxmk
         shell: bash
         run: |
-          "${{ runner.temp }}/rbxmk/rbxmk.exe" test src/**/*.test.lua
+          rbxmk.exe test src/**/*.test.lua
