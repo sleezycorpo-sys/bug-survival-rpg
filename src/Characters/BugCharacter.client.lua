@@ -1,0 +1,1 @@
+-- Client‑side stub for BugCharacter (currently empty)
