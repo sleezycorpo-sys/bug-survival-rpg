@@ -11,30 +11,28 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      # Install Rojo (needed for possible builds)
+      # Install Rojo (optional for future builds)
       - name: Install Rojo
         shell: bash
         run: |
           curl -L -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.0/rojo-7.7.0-windows-x86_64.zip
-          mkdir -p ${{ runner.temp }}/rojo
-          unzip -q rojo.zip -d ${{ runner.temp }}/rojo
-          echo "${{ runner.temp }}/rojo" >> $GITHUB_PATH
+          mkdir -p "$RUNNER_TEMP/rojo"
+          unzip -q rojo.zip -d "$RUNNER_TEMP/rojo"
       # Install TestEZ library
       - name: Install TestEZ
         shell: bash
         run: |
           git clone https://github.com/roblox/testez.git TestEZ
-      # Install rbxmk (correct version) - extract exe directly and add to PATH
+      # Install rbxmk (correct version) and make it executable
       - name: Install rbxmk
         shell: bash
         run: |
           curl -L -o rbxmk.zip https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-v0.9.1-windows-amd64.zip
-          mkdir -p ${{ runner.temp }}/rbxmk
-          unzip -q rbxmk.zip -d ${{ runner.temp }}/rbxmk
-          chmod +x ${{ runner.temp }}/rbxmk/rbxmk.exe
-          echo "${{ runner.temp }}/rbxmk" >> $GITHUB_PATH
-      # Run tests with rbxmk (now in PATH)
+          mkdir -p "$RUNNER_TEMP/rbxmk"
+          unzip -q rbxmk.zip -d "$RUNNER_TEMP/rbxmk"
+          chmod +x "$RUNNER_TEMP/rbxmk/rbxmk.exe"
+      # Run tests with rbxmk using the full extracted path
       - name: Run Tests with rbxmk
         shell: bash
         run: |
-          rbxmk.exe test src/**/*.test.lua
+          "$RUNNER_TEMP/rbxmk/rbxmk.exe" test src/**/*.test.lua
