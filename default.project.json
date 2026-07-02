@@ -1,0 +1,12 @@
+{
+  "name": "BugSurvivalRPG",
+  "metadata": {
+    "ignore": ["**/.git/**"]
+  },
+  "tree": {
+    "$className": "DataModel",
+    "Init": {
+      "$path": "src/Init"
+    }
+  }
+}
