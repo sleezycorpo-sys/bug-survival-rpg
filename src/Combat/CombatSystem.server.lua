@@ -1,5 +1,6 @@
 local CombatSystem = {}
 local RaidMgr = require(script.Parent.RaidManager)
+local Persistence = require(script.Parent.Persistence)
 
 function CombatSystem.PlayerAttack(player, raidName, enemyIdx)
     local raid = RaidMgr.ActiveRaids[raidName]
@@ -11,6 +12,7 @@ function CombatSystem.PlayerAttack(player, raidName, enemyIdx)
         player.Resources = (player.Resources or 0) + 2
         table.remove(raid.Enemies, enemyIdx)
     end
+    Persistence.Save(player)
 end
 
 function CombatSystem.EnemyAttack(player, raidName, enemyIdx)
@@ -21,8 +23,9 @@ function CombatSystem.EnemyAttack(player, raidName, enemyIdx)
     player.Health = (player.Health or 0) - (enemy.Attack or 0)
     if player.Health <= 0 then
         player.Health = 0
-        -- future: flag defeat
+        -- could add defeat flag later
     end
+    Persistence.Save(player)
 end
 
 return CombatSystem
