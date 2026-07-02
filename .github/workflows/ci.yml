@@ -31,11 +31,10 @@ jobs:
           curl -L -o rbxmk.zip https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-v0.9.1-windows-amd64.zip
           mkdir -p ${{ runner.temp }}/rbxmk
           unzip -q rbxmk.zip -d ${{ runner.temp }}/rbxmk
-          # The zip contains rbxmk.exe at the root; ensure it's executable
           chmod +x ${{ runner.temp }}/rbxmk/rbxmk.exe
           echo "${{ runner.temp }}/rbxmk" >> $GITHUB_PATH
       # Run tests with rbxmk (using full path to avoid PATH issues)
       - name: Run Tests with rbxmk
         shell: bash
         run: |
-          "$RUNNER_TEMP/rbxmk/rbxmk.exe" test src/**/*.test.lua
+          "${{ runner.temp }}/rbxmk/rbxmk.exe" test src/**/*.test.lua
