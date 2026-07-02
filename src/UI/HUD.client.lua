@@ -1,5 +1,8 @@
 local HUD = {}
 
+local Network = require(script.Parent.Parent.Network.Network)
+local currentFrame = nil
+
 function HUD.Create(player)
     local frame = Instance.new("Frame")
     local resLabel = Instance.new("TextLabel")
@@ -27,6 +30,35 @@ function HUD.CreateCombat(player, raid)
         eLabel.Parent = enemiesFolder
     end
     return frame
+end
+
+-- Apply a full player data update to an existing HUD frame
+function HUD.ApplyUpdate(frame, data)
+    local resLabel = frame:FindFirstChild("ResourcesLabel")
+    if resLabel then
+        resLabel.Text = tostring(data.Resources or 0)
+    end
+    local healthLabel = frame:FindFirstChild("PlayerHealth")
+    if healthLabel then
+        healthLabel.Text = tostring(data.Health or 0)
+    end
+    -- If the frame has an Enemies folder, update each enemy health label
+    local enemiesFolder = frame:FindFirstChild("Enemies")
+    if enemiesFolder and data.Enemies then
+        for _, enemy in ipairs(data.Enemies) do
+            local label = enemiesFolder:FindFirstChild(enemy.Type .. "Health")
+            if label then
+                label.Text = tostring(enemy.Health)
+            end
+        end
+    end
+end
+
+function HUD.Bind(frame)
+    currentFrame = frame
+    Network.ListenUpdate(function(data)
+        HUD.ApplyUpdate(frame, data)
+    end)
 end
 
 return HUD
