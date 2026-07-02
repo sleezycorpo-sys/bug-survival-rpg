@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, worktree-bug_survival_rpg ]
   pull_request:
     branches: [ main, master ]
 
@@ -11,11 +11,19 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Rojo
+      - name: Set up Lua (Luau)
+        uses: leafo/gh-actions-luau@v1
+      - name: Install Rojo
         run: |
           curl -L -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.0/rojo-7.7.0-windows-x86_64.zip
           mkdir -p ${{ runner.temp }}/rojo
           unzip -q rojo.zip -d ${{ runner.temp }}/rojo
           echo "${{ runner.temp }}/rojo" >> $GITHUB_PATH
-      - name: Run tests (placeholder)
-        run: echo "Tests would run here with Rojo and TestEZ"
+      - name: Install TestEZ
+        run: |
+          git clone https://github.com/roblox/testez.git TestEZ
+      - name: Run Tests with rbxmk
+        run: |
+          curl -L -o rbxmk.exe https://github.com/rojo-rbx/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe
+          chmod +x rbxmk.exe
+          ./rbxmk.exe test src/**/*.test.lua
