@@ -11,20 +11,24 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      # Lua/Luau environment not needed for rbxmk; we just ensure Rojo is available
+      # Install Rojo (needed for possible builds)
       - name: Install Rojo
         run: |
           curl -L -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.0/rojo-7.7.0-windows-x86_64.zip
           mkdir -p ${{ runner.temp }}/rojo
           unzip -q rojo.zip -d ${{ runner.temp }}/rojo
           echo "${{ runner.temp }}/rojo" >> $GITHUB_PATH
+      # Install TestEZ library
       - name: Install TestEZ
         run: |
           git clone https://github.com/roblox/testez.git TestEZ
+      # Install rbxmk (correct version)
       - name: Install rbxmk
         run: |
-          curl -L -o rbxmk.exe https://github.com/rojo-rbx/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe
-          chmod +x rbxmk.exe
+          curl -L -o rbxmk.zip https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-v0.9.1-windows-amd64.zip
+          unzip -q rbxmk.zip -d ${{ runner.temp }}/rbxmk
+          echo "${{ runner.temp }}/rbxmk" >> $GITHUB_PATH
+      # Run tests with rbxmk
       - name: Run Tests with rbxmk
         run: |
-          ./rbxmk.exe test src/**/*.test.lua
+          rbxmk.exe test src/**/*.test.lua
