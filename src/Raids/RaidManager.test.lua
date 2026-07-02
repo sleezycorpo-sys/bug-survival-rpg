@@ -1,4 +1,5 @@
 return function()
+    _G.MockDataStore = {}
     local RaidMgr = require(script.Parent.RaidManager)
     local player = {UserId = 1, Resources = 0}
     RaidMgr.StartRaid(player, "PicnicBasket", 3)

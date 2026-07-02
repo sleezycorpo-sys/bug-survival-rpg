@@ -1,7 +1,7 @@
 local RaidManager = {}
 RaidManager.ActiveRaids = {}
 local EnemyData = require(script.Parent.EnemyData)
-local Persistence = require(script.Parent.Persistence)
+local Persistence = require(script.Parent.Parent.Persistence.Persistence)
 
 function RaidManager.StartRaid(player, raidName, enemyCount)
     -- base reward

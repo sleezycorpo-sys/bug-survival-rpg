@@ -1,6 +1,6 @@
 local CombatSystem = {}
 local RaidMgr = require(script.Parent.RaidManager)
-local Persistence = require(script.Parent.Persistence)
+local Persistence = require(script.Parent.Parent.Persistence.Persistence)
 
 function CombatSystem.PlayerAttack(player, raidName, enemyIdx)
     local raid = RaidMgr.ActiveRaids[raidName]

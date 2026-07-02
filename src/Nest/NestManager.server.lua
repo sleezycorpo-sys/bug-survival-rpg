@@ -1,6 +1,6 @@
 local NestManager = {}
 local UPGRADE_COST = 10
-local Persistence = require(script.Parent.Persistence)
+local Persistence = require(script.Parent.Parent.Persistence.Persistence)
 
 function NestManager.Upgrade(player)
     if (player.Resources or 0) >= UPGRADE_COST then
