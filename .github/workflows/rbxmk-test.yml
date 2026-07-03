@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: pwsh        # use PowerShell for all steps
+        shell: pwsh        # default PowerShell for most steps
 
     steps:
       - name: Checkout repository
@@ -21,16 +21,18 @@ jobs:
           fetch-depth: 0   # get full history (optional)
 
       # -------------------------------------------------------
-      # 1️⃣ Download the correct Windows binary for rbxmk
+      # 1️⃣ Download the exact Windows binary for rbxmk using curl (works on windows runners)
       # -------------------------------------------------------
       - name: Download rbxmk.exe (Windows binary)
+        shell: bash
         run: |
-          $url = "https://github.com/Anaminus/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe"
-          $out = "$PSScriptRoot\rbxmk.exe"
-          Write-Host "Downloading rbxmk from $url ..."
-          Invoke-WebRequest -Uri $url -OutFile $out
-          # Remove Windows "blocked" flag that can appear on downloaded executables
-          Unblock-File -Path $out
+          set -e
+          url="https://github.com/Anaminus/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe"
+          echo "Downloading rbxmk from $url"
+          curl -L -o rbxmk.exe "$url"
+          # Ensure the file is not marked as blocked on Windows
+          chmod +x rbxmk.exe
+          # Switch back to PowerShell for the next steps (the file will be in the workspace)
 
       # -------------------------------------------------------
       # 2️⃣ (Optional) Verify checksum – helps ensure a clean download
@@ -38,8 +40,10 @@ jobs:
       - name: Verify rbxmk.exe integrity (optional)
         run: |
           Write-Host "Computing SHA256 checksum..."
-          $hash = Get-FileHash rbxmk.exe -Algorithm SHA256
+          $hash = Get-FileHash .\rbxmk.exe -Algorithm SHA256
           Write-Host "SHA256: $($hash.Hash)"
+          # Unblock the file in case Windows marks it as blocked
+          Unblock-File -Path .\rbxmk.exe
 
       # -------------------------------------------------------
       # 3️⃣ Run the TestEZ suite with rbxmk
