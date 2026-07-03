@@ -1,12 +1,11 @@
 name: Run rbxmk Test Suite
 
-  workflow_dispatch:
-
   on:
     push:
       branches: [ master, main, develop, worktree-bug_survival_rpg ]
     pull_request:
       branches: [ master, main, develop, worktree-bug_survival_rpg ]
+    workflow_dispatch:   # <-- now correctly inside the `on:` mapping
 
   jobs:
     test:
