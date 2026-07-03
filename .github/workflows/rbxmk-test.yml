@@ -5,11 +5,11 @@ on:
     branches: [ master, main, develop, worktree-bug_survival_rpg ]
   pull_request:
     branches: [ master, main, develop, worktree-bug_survival_rpg ]
-  workflow_dispatch:   # enables manual trigger from the UI
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-latest   # use Linux runner – rbxmk has a Linux binary
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -18,29 +18,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # get full history (optional)
+          fetch-depth: 0
 
-      # -------------------------------------------------------
-      # 1️⃣ Download the Linux binary for rbxmk
-      # -------------------------------------------------------
-      - name: Download rbxmk (Linux binary)
+      # Download Linux binary zip for rbxmk (v0.9.1)
+      - name: Download rbxmk Linux zip
         run: |
           set -e
-          url="https://github.com/Anaminus/rbxmk/releases/download/v0.15.1/rbxmk-linux-x86_64"
+          url="https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-linux-amd64.zip"
           echo "Downloading rbxmk from $url"
-          curl -L -o rbxmk "$url"
-          chmod +x rbxmk
+          curl -L -o rbxmk.zip "$url"
+          unzip rbxmk.zip -d rbxmk_dir
+          chmod +x rbxmk_dir/rbxmk
 
-      # -------------------------------------------------------
-      # 2️⃣ (Optional) Verify checksum – helps ensure a clean download
-      # -------------------------------------------------------
-      - name: Verify rbxmk integrity (optional)
+      # Optional checksum (display)
+      - name: Show checksum of rbxmk binary
         run: |
-          echo "Computing SHA256 checksum..."
-          sha256sum rbxmk | awk '{print $1}'
+          sha256sum rbxmk_dir/rbxmk
 
-      # -------------------------------------------------------
-      # 3️⃣ Run the TestEZ suite with rbxmk
-      # -------------------------------------------------------
       - name: Run TestEZ tests
-        run: ./rbxmk test src/**/*.test.lua
+        run: ./rbxmk_dir/rbxmk test src/**/*.test.lua
