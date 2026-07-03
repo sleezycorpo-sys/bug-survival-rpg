@@ -20,6 +20,13 @@ jobs:
         with:
           fetch-depth: 0   # get the whole history (optional)
 
+      - name: Download rbxmk.exe (Windows binary) if missing
+        run: |
+          if (-Not (Test-Path .\rbxmk.exe)) {
+            Write-Host "Downloading rbxmk.exe for Windows..."
+            Invoke-WebRequest -Uri "https://github.com/rojo-rbx/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe" -OutFile rbxmk.exe
+          }
+
       - name: Verify rbxmk.exe integrity
         run: |
           Write-Host "Checking rbxmk.exe checksum (optional)…"
