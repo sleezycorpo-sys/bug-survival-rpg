@@ -20,20 +20,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Download Linux binary zip for rbxmk (v0.9.1)
+      # -------------------------------------------------------
+      # 1️⃣ Download the exact Linux zip for rbxmk (v0.9.1)
+      # -------------------------------------------------------
       - name: Download rbxmk Linux zip
         run: |
           set -e
-          url="https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-linux-amd64.zip"
+          url="https://github.com/Anaminus/rbxmk/releases/download/v0.9.1/rbxmk-v0.9.1-linux-amd64.zip"
           echo "Downloading rbxmk from $url"
           curl -L -o rbxmk.zip "$url"
           unzip rbxmk.zip -d rbxmk_dir
           chmod +x rbxmk_dir/rbxmk
 
-      # Optional checksum (display)
+      # -------------------------------------------------------
+      # 2️⃣ (Optional) Show checksum of the binary
+      # -------------------------------------------------------
       - name: Show checksum of rbxmk binary
         run: |
           sha256sum rbxmk_dir/rbxmk
 
+      # -------------------------------------------------------
+      # 3️⃣ Run the TestEZ suite with the extracted rbxmk binary
+      # -------------------------------------------------------
       - name: Run TestEZ tests
         run: ./rbxmk_dir/rbxmk test src/**/*.test.lua
