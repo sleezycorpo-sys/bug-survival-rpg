@@ -1,6 +1,6 @@
 name: Run rbxmk Test Suite
 
-  # Lets you start the workflow manually from the GitHub UI
+  # Allows you to start the workflow manually from the GitHub UI
   workflow_dispatch:
 
   on:
@@ -20,7 +20,7 @@ name: Run rbxmk Test Suite
         - name: Checkout repository
           uses: actions/checkout@v4
           with:
-            fetch-depth: 0   # get the full history (optional)
+            fetch-depth: 0   # get the whole history (optional)
 
         - name: Verify rbxmk.exe integrity
           run: |
