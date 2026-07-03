@@ -12,25 +12,37 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: pwsh
+        shell: pwsh        # use PowerShell for all steps
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # get the whole history (optional)
+          fetch-depth: 0   # get full history (optional)
 
-      - name: Download rbxmk.exe (Windows binary) if missing
+      # -------------------------------------------------------
+      # 1️⃣ Download the correct Windows binary for rbxmk
+      # -------------------------------------------------------
+      - name: Download rbxmk.exe (Windows binary)
         run: |
-          if (-Not (Test-Path .\rbxmk.exe)) {
-            Write-Host "Downloading rbxmk.exe for Windows..."
-            Invoke-WebRequest -Uri "https://github.com/rojo-rbx/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe" -OutFile rbxmk.exe
-          }
+          $url = "https://github.com/Anaminus/rbxmk/releases/download/v0.15.1/rbxmk-windows-x86_64.exe"
+          $out = "$PSScriptRoot\rbxmk.exe"
+          Write-Host "Downloading rbxmk from $url ..."
+          Invoke-WebRequest -Uri $url -OutFile $out
+          # Remove Windows "blocked" flag that can appear on downloaded executables
+          Unblock-File -Path $out
 
-      - name: Verify rbxmk.exe integrity
+      # -------------------------------------------------------
+      # 2️⃣ (Optional) Verify checksum – helps ensure a clean download
+      # -------------------------------------------------------
+      - name: Verify rbxmk.exe integrity (optional)
         run: |
-          Write-Host "Checking rbxmk.exe checksum (optional)…"
-          certutil -hashfile rbxmk.exe SHA256 | Out-Null
+          Write-Host "Computing SHA256 checksum..."
+          $hash = Get-FileHash rbxmk.exe -Algorithm SHA256
+          Write-Host "SHA256: $($hash.Hash)"
 
+      # -------------------------------------------------------
+      # 3️⃣ Run the TestEZ suite with rbxmk
+      # -------------------------------------------------------
       - name: Run TestEZ tests
-        run: .\\rbxmk.exe test src/**/*.test.lua
+        run: .\rbxmk.exe test src/**/*.test.lua
