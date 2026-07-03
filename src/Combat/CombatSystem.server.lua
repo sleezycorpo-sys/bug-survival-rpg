@@ -1,6 +1,7 @@
 local CombatSystem = {}
 local RaidMgr = require(script.Parent.RaidManager)
 local Persistence = require(script.Parent.Parent.Persistence.Persistence)
+local Network = require(script.Parent.Parent.Network.Network)  -- server network module
 
 function CombatSystem.PlayerAttack(player, raidName, enemyIdx)
     local raid = RaidMgr.ActiveRaids[raidName]
@@ -13,6 +14,7 @@ function CombatSystem.PlayerAttack(player, raidName, enemyIdx)
         table.remove(raid.Enemies, enemyIdx)
     end
     Persistence.Save(player)
+    Network.FireUpdate(player)
 end
 
 function CombatSystem.EnemyAttack(player, raidName, enemyIdx)
@@ -26,6 +28,7 @@ function CombatSystem.EnemyAttack(player, raidName, enemyIdx)
         -- could add defeat flag later
     end
     Persistence.Save(player)
+    Network.FireUpdate(player)
 end
 
 return CombatSystem

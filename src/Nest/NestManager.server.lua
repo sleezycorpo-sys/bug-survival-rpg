@@ -1,6 +1,7 @@
 local NestManager = {}
 local UPGRADE_COST = 10
 local Persistence = require(script.Parent.Parent.Persistence.Persistence)
+local Network = require(script.Parent.Parent.Network.Network)  -- server network module
 
 function NestManager.Upgrade(player)
     if (player.Resources or 0) >= UPGRADE_COST then
@@ -8,6 +9,8 @@ function NestManager.Upgrade(player)
         player.NestLevel = (player.NestLevel or 1) + 1
         -- persist after upgrade
         Persistence.Save(player)
+        -- broadcast update
+        Network.FireUpdate(player)
     end
 end
 
