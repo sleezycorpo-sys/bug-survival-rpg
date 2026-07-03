@@ -1,6 +1,5 @@
 name: Run rbxmk Test Suite
 
-  # Allows you to start the workflow manually from the GitHub UI
   workflow_dispatch:
 
   on:
