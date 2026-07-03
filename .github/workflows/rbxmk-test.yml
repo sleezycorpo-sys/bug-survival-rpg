@@ -1,27 +1,31 @@
 name: Run rbxmk Test Suite
-  on:
-    push:
-      branches: [ master, main, develop, worktree-bug_survival_rpg ]
-    pull_request:
-      branches: [ master, main, develop, worktree-bug_survival_rpg ]
 
-  jobs:
-    test:
-      runs-on: windows-latest
-      defaults:
-        run:
-          shell: pwsh
+# Allows you to start the workflow manually from the GitHub UI
+workflow_dispatch:
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0    # get the whole history (optional)
+on:
+  push:
+    branches: [ master, main, develop, worktree-bug_survival_rpg ]
+  pull_request:
+    branches: [ master, main, develop, worktree-bug_survival_rpg ]
 
-        - name: Verify rbxmk.exe integrity
-          run: |
-            Write-Host "Checking rbxmk.exe checksum (optional)…"
-            certutil -hashfile rbxmk.exe SHA256 | Out-Null
+jobs:
+  test:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
 
-        - name: Run TestEZ tests
-          run: .\rbxmk.exe test src/**/*.test.lua
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # get the whole history (optional)
+
+      - name: Verify rbxmk.exe integrity
+        run: |
+          Write-Host "Checking rbxmk.exe checksum (optional)…"
+          certutil -hashfile rbxmk.exe SHA256 | Out-Null
+
+      - name: Run TestEZ tests
+        run: .\rbxmk.exe test src/**/*.test.lua
