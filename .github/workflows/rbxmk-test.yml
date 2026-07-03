@@ -1,0 +1,28 @@
+name: Run rbxmk Test Suite
+  on:
+    push:
+      branches: [ master, main, develop ]   # adjust as needed
+    pull_request:
+      branches: [ master, main, develop ]
+
+  jobs:
+    test:
+      runs-on: windows-latest           # Windows runner can run the .exe
+      defaults:
+        run:
+          shell: pwsh                   # PowerShell (default on windows)
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            # fetch the whole repo (including the exe)
+            fetch-depth: 0
+
+        - name: Ensure rbxmk.exe is executable
+          run: |
+            # In case the exe got line‑ending conversion, reset binary flag
+            certutil -hashfile rbxmk.exe SHA256 > $null
+
+        - name: Run TestEZ tests
+          run: .\rbxmk.exe test src/**/*.test.lua
